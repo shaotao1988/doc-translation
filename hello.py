@@ -3,6 +3,7 @@
 import xlrd,xlwt,sys
 import codecs
 
+#http://stackoverflow.com/questions/3723793/preserving-styles-using-pythons-xlrd-xlwt-and-xlutils-copy
 def put_value():
         data = xlrd.open_workbook('test1.xlsx')
         #table = data.sheet_by_name("sheet1")
