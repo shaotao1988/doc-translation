@@ -6,3 +6,11 @@ Spanish.txt
 translate.py
 
 Spanish.txt
+
+*.pyc
+
+*.xlsx
+
+*.xls
+
+test.py
