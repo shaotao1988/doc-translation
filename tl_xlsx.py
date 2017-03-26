@@ -1,6 +1,6 @@
 import openpyxl
 import os, shutil
-import translate3
+from translate3 import Translator
 
 filename = '/Users/ruby/Documents/doc-translation/test.xlsx'
 path = os.path.dirname(filename)
@@ -10,11 +10,10 @@ shutil.copyfile(filename, new_filename)
 wb = openpyxl.load_workbook(new_filename)
 ws = wb.active
 
-js = translate3.Py4Js()
+translator = Translator()
 
 for row in ws.rows:
     for cell in row:
-        tk = js.getTk(cell.value)
-        cell.value = translate3.translate(cell.value, tk)
+        cell.value = translator.translate(cell.value)
 
 wb.save(new_filename)

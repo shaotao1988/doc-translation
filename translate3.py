@@ -50,32 +50,36 @@ class Py4Js():
     def getTk(self,text):
         return self.ctx.call("TL",text)
 
-# Simulate a web browser, open the url and extract data returned by server
-def open_url(url):
-    headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20100101 Firefox/23.0'}    
-    req = urllib.request.Request(url = url,headers = headers)  
-    response = urllib.request.urlopen(req)  
-    data = response.read().decode('utf-8')  
-    return data  
+class Translator():
+    def __init__(self):
+        self.py4js = Py4Js()
+        
+    # Simulate a web browser, open the url and extract data returned by server
+    def open_url(self, url):
+        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:23.0) Gecko/20100101 Firefox/23.0'}    
+        req = urllib.request.Request(url = url,headers = headers)  
+        response = urllib.request.urlopen(req)  
+        data = response.read().decode('utf-8')  
+        return data  
 
-# Translate content to target language
-def translate(content,tk,target_language='en'):
-    content = urllib.parse.quote(content)       
-    url = "http://translate.google.cn/translate_a/single?client=t"\
-          "&sl=auto&tl=%s&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca"\
-          "&dt=rw&dt=rm&dt=ss&dt=t&ie=UTF-8&oe=UTF-8&clearbtn=1&otf=1&pc=1"\
-          "&srcrom=0&ssel=0&tsel=0&kc=2&tk=%s&q=%s"%(target_language,tk,content)  
+    # Translate content to target language
+    def translate(self, content, target_language='en'):
+        tk = self.py4js.getTk(content)
+        content = urllib.parse.quote(content)       
+        url = "http://translate.google.cn/translate_a/single?client=t"\
+              "&sl=auto&tl=%s&hl=zh-CN&dt=at&dt=bd&dt=ex&dt=ld&dt=md&dt=qca"\
+              "&dt=rw&dt=rm&dt=ss&dt=t&ie=UTF-8&oe=UTF-8&clearbtn=1&otf=1&pc=1"\
+              "&srcrom=0&ssel=0&tsel=0&kc=2&tk=%s&q=%s"%(target_language,tk,content)  
+        # Parse the result
+        result = self.open_url(url)  
+        #print(result)
+        end = result.find("\",")  
+        if end > 4:
+            return result[4:end]
+        return None
       
-    # Parse the result
-    result = open_url(url)  
-    #print(result)
-    end = result.find("\",")  
-    if end > 4:
-        return result[4:end]
-    return None
-  
 def main():  
-    js = Py4Js()  
+    translator = Translator() 
       
     while 1:  
         content = input("Please input the ：")  
@@ -83,8 +87,7 @@ def main():
         if content == 'q!':  
             break  
           
-        tk = js.getTk(content)  
-        result = translate(content,tk)
+        result = translator.translate(content)
         print(result)
       
 if __name__ == "__main__":  
