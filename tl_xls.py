@@ -3,7 +3,7 @@
 import xlrd,xlwt,xlutils,sys
 from xlutils.filter import process,XLRDReader,XLWTWriter
 import os, shutil
-import translate3
+from translate3 import Translator
 
 def copy2(wb):
     w = XLWTWriter()
@@ -29,7 +29,7 @@ def put_value():
         work_book, style_list = copy2(origin_workbook)
         work_sheet = work_book.get_sheet(0)
 
-        js = translate3.Py4Js()
+        translator = Translator()
         
         for rownum in range(0, nrows):
             for colnum in range(0, ncols):
@@ -38,8 +38,7 @@ def put_value():
                 if len(value) > 0:
                         xf_index = origin_sheet.cell_xf_index(rownum, colnum)
                         print(value)
-                        tk = js.getTk(value)
-                        value = translate3.translate(value, tk)
+                        value = translator.translate(value)
                         work_sheet.write(rownum, colnum, value, style_list[xf_index])
         work_book.save(new_filename)
 
